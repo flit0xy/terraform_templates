@@ -78,3 +78,13 @@ module "container_app" {
   memory                       = "1.0Gi"
   environment                  = "PRODUCTION"
 }
+
+module "aks-prod" {
+  source              = "./modules/aks"
+  aks_cluster_name    = "aks-prod-cluster"
+  location            = module.rg-prod.location
+  resource_group_name = module.rg-prod.name
+  dns_prefix          = "aksprod"
+  node_count          = 3
+  vm_size             = "Standard_DS2_v2"
+}
