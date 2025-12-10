@@ -61,6 +61,7 @@ module "webapp-prod" {
   resource_group_name = module.rg-prod.name
   service_plan_id     = module.webapp-prod.service_plan_id
   service_plan_name   = "asp-prod"
+  web_app_id          = module.webapp-prod.web_app_id
   app_settings = {
     "ENVIRONMENT" = "PRODUCTION"
     "VERSION"     = "1.0.0"
@@ -87,4 +88,13 @@ module "aks-prod" {
   dns_prefix          = "aksprod"
   node_count          = 3
   vm_size             = "Standard_DS2_v2"
+}
+module "private_endpoint" {
+  source                = "./modules/private_endpoint"
+  private_endpoint_name = "pe-webapp-prod"
+  location              = module.rg-prod.location
+  resource_group_name   = module.rg-prod.name
+  subnet_id             = module.subnet-prod.subnet_id
+  resource_id           = module.webapp-prod.web_app_id
+  subresource_names     = ["sites"]
 }
