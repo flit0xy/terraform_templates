@@ -26,14 +26,14 @@ module "subnet-monster-2" {
   vnet_name           = module.monster-vnet.vnet_name
   resource_group_name = module.monster-rg.name
   delegation = {
-  name = "webapp-delegation"
-  service_delegation = {
-    name = "Microsoft.Web/serverFarms"
-    actions = [
-      "Microsoft.Network/virtualNetworks/subnets/action"
-    ]
+    name = "webapp-delegation"
+    service_delegation = {
+      name = "Microsoft.Web/serverFarms"
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/action"
+      ]
+    }
   }
-}
 }
 
 module "monster-appgateway" {
@@ -44,6 +44,8 @@ module "monster-appgateway" {
   subnet_id            = module.subnet-monster-1.subnet_id
   public_ip_address_id = module.monster-public-ip.public_ip_id
   frontend_port        = 80
+  backend_fqdn         = module.monster-webapp.web_app_default_hostname
+  backend_port         = 443
 }
 module "monster-public-ip" {
   source              = "../modules/Public-IP"
