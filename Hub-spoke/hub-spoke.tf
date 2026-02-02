@@ -6,7 +6,6 @@
 
 provider "azurerm" {
   features {}
-  subscription_id = "0d31639b-710c-4b88-985e-b83f596c7353"
 }
 
 module "oshee-rg" {
