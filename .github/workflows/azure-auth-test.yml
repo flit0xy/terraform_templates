@@ -1,45 +1,45 @@
-name: terraform-ci
+name: Terraform Deploy to Azure
 
 on:
   push:
     branches:
-      - dev
       - main
-    paths:
-      - "terraform_templates/test/**"
 
 permissions:
-  id-token: write
+  id-token: write   # REQUIRED for OIDC
   contents: read
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    env:
+      ARM_USE_OIDC: true
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Azure Login (OIDC)
-        uses: azure/login@v1
-        with:
-          client-id: ${{ vars.AZURE_CLIENT_ID }}
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Azure Login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Init
-        working-directory: terraform_templates/test
         run: terraform init
 
-      - name: Terraform Plan (dev)
-        if: github.ref == 'refs/heads/dev'
-        working-directory: terraform_templates/test
-        run: terraform plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
 
-      - name: Terraform Apply (main)
-        if: github.ref == 'refs/heads/main'
-        working-directory: terraform_templates/test
-        run: terraform apply -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
