@@ -1,6 +1,6 @@
 module "sfd-rg" {
   source              = "../modules/resource_group"
-  resource_group_name = "1-dea61712-playground-sandbox"
+  resource_group_name = "flit0xy-playground-sandbox"
   location            = "westeurope"
 
 }
