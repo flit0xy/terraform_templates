@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - dev
-      - main
+    paths:
+      - "tf-labs/test/**"
 
 permissions:
   id-token: write
@@ -29,12 +30,15 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
+        working-directory: tf-labs/test
         run: terraform init
 
       - name: Terraform Plan (dev)
         if: github.ref == 'refs/heads/dev'
+        working-directory: tf-labs/test
         run: terraform plan
 
-      - name: Terraform Apply (dev)
-        if: github.ref == 'refs/heads/*'
+      - name: Terraform Apply (main)
+        if: github.ref == 'refs/heads/main'
+        working-directory: tf-labs/test
         run: terraform apply -auto-approve
