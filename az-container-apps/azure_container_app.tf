@@ -42,7 +42,7 @@ module "dzik-ca" {
 module "dzik-ca-role-assignment" {
   source               = "../modules/role_assignment"
   scope                = module.dzik-acr.container_registry_id
-  role_definition_name = "contributor"
+  role_definition_name = "AcrPull"
   principal_id         = module.dzik-ca.principal_id
 }
 
