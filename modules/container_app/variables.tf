@@ -60,3 +60,7 @@ variable "latest_revision" {
   type        = bool
   default     = true
 }
+variable "registry_server" {
+  description = "The server of the container registry"
+  type        = string
+}

@@ -32,14 +32,37 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # ---------------------------
+      # 1️⃣ Terraform Init
+      # ---------------------------
       - name: Terraform Init
         run: terraform init
         working-directory: ./az-container-apps
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+      # ---------------------------
+      # 2️⃣ Apply INFRA ONLY
+      # ---------------------------
+      - name: Terraform Apply (Infra Only)
+        run: |
+          terraform apply -auto-approve \
+            -target=module.dzik-rg \
+            -target=module.dzik-acr \
+            -target=module.dzik-cae
         working-directory: ./az-container-apps
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+      # ---------------------------
+      # 3️⃣ Import nginx into ACR
+      # ---------------------------
+      - name: Import nginx into ACR
+        run: |
+          az acr import \
+            --name dzikacr \
+            --source docker.io/library/nginx:latest \
+            --image nginx:latest
+
+      # ---------------------------
+      # 4️⃣ Apply FULL configuration
+      # ---------------------------
+      - name: Terraform Apply (Full)
+        run: terraform apply -auto-approve
         working-directory: ./az-container-apps

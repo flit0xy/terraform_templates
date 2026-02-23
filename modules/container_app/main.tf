@@ -33,4 +33,8 @@ resource "azurerm_container_app" "container_app" {
   identity {
     type = "SystemAssigned"
   }
+  registry {
+    server = var.registry_server
+    identity = "system"
+  }
 }
