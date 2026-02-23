@@ -25,7 +25,7 @@ module "dzik-ca" {
   location                     = module.dzik-rg.location
   resource_group_name          = module.dzik-rg.name
   container_name               = "dzik-container"
-  container_image              = "nginx:latest"
+  container_image              = "${module.dzik-acr.login_server}/nginx:latest"
   cpu                          = "0.25"
   memory                       = "0.5Gi"
   container_app_environment_id = module.dzik-cae.container_app_environment_id
@@ -37,7 +37,9 @@ module "dzik-ca" {
     min_replicas = 1
     max_replicas = 1
   }
-}
+  registry_server  = module.dzik-acr.login_server
+  
+  }
 
 module "dzik-ca-role-assignment" {
   source               = "../modules/role_assignment"
