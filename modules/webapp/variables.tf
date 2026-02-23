@@ -18,11 +18,8 @@ variable "app_settings" {
     description = "A map of app settings for the web application"
     type        = map(string)
 }
-variable "service_plan_name" {
-    description = "The name of the App Service Plan"
+variable "public_network_access" {
+    description = "Enable or Disable public network access to the web app. Possible values are 'Enabled' or 'Disabled'."
     type        = string
-}
-variable "web_app_id" {
-    description = "The ID of the Web App"
-    type        = string
+    default     = "Enabled"
 }

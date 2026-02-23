@@ -34,3 +34,33 @@ variable "environment" {
     description = "The environment variable to set in the container"
     type        = string
 }
+variable "scale" {
+  description = "The scale settings for the container app"
+  type        = object({
+    min_replicas = number
+    max_replicas = number
+  })
+}
+variable "target_port" {
+  description = "The target port for the container app"
+  type        = number
+}
+variable "external_enabled" {
+  description = "Enable external ingress for the container app"
+  type        = bool
+  default     = true
+}
+variable "percent" {
+  description = "The percentage of traffic to route to the latest revision"
+  type        = number
+  default     = 100
+}
+variable "latest_revision" {
+  description = "Whether to route traffic to the latest revision"
+  type        = bool
+  default     = true
+}
+variable "registry_server" {
+  description = "The server of the container registry"
+  type        = string
+}

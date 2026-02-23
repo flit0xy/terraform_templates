@@ -19,3 +19,14 @@ variable "vnet_name" {
 description = "The name of the virtual network."
 type        = string
 }
+variable "delegation" {
+  description = "The delegation configuration for the subnet."
+  type = object({
+    name               = string
+    service_delegation = object({
+      name    = string
+      actions = list(string)
+    })
+  })
+  default = null
+}

@@ -5,10 +5,15 @@ resource "azurerm_private_endpoint" "private_endpoint" {
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = "${var.private_endpoint_name}-psc"
-    private_connection_resource_id = var.resource_id
-    is_manual_connection           = false
-    subresource_names              = var.subresource_names
+    name                           = var.private_service_connection.name
+    private_connection_resource_id = var.private_service_connection.private_connection_resource_id
+    is_manual_connection           = var.private_service_connection.is_manual_connection
+    subresource_names              = var.private_service_connection.subresource_names
   }
-  
+
+  private_dns_zone_group {
+    name                 = var.private_dns_zone_group.name
+    private_dns_zone_ids = var.private_dns_zone_group.private_dns_zone_ids  # ✅ fixed
+  }
 }
+
