@@ -53,9 +53,13 @@ jobs:
       # ---------------------------
       # 3️⃣ Import nginx into ACR
       # ---------------------------
-      - name: Import nginx into ACR
+      - name: Import nginx into ACR (if not exists)
         run: |
-          az acr import \
+          az acr repository show-tags \
+            --name dzikacr \
+            --repository nginx \
+            --query "contains(@, 'latest')" -o tsv \
+          || az acr import \
             --name dzikacr \
             --source docker.io/library/nginx:latest \
             --image nginx:latest
